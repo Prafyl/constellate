@@ -51,11 +51,12 @@ export class NeighborThreads {
     );
   }
 
-  show(galaxy: Galaxy, starId: number | null) {
+  /** Threads from `origin` to each of `targets` (defaults to the origin's own neighbors). */
+  show(galaxy: Galaxy, origin: number | null, targets?: number[]) {
     const verts: number[] = [];
-    if (starId != null) {
-      const s = galaxy.stars[starId];
-      for (const n of s.neighbors) verts.push(...s.pos, ...galaxy.stars[n].pos);
+    if (origin != null) {
+      const s = galaxy.stars[origin];
+      for (const n of targets ?? s.neighbors) if (n !== origin) verts.push(...s.pos, ...galaxy.stars[n].pos);
     }
     this.lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
   }

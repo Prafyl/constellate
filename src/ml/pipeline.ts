@@ -111,6 +111,8 @@ export async function buildGalaxy(title: string, text: string, embed: Embedder, 
       pos: pos[i].map((v) => +v.toFixed(2)) as [number, number, number],
       cluster: labels[i],
       neighbors: sims.slice(0, 3).map((x) => x.j),
+      scores: sims.slice(0, 3).map((x) => +x.s.toFixed(3)),
+      vec: vectors[i].map((v) => +v.toFixed(3)),
       term: bestTermIn(t, labels[i]),
     };
   });

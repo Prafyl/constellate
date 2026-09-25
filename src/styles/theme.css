@@ -89,12 +89,73 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .con-label:hover { background: color-mix(in srgb, var(--c) 25%, transparent); }
 
 /* ── star card ── */
-.card { position: fixed; right: 28px; top: 96px; width: 380px; padding: 24px; z-index: 4; border-top: 2px solid var(--c); animation: rise 0.35s ease-out; }
-.card .eyebrow:first-of-type { color: var(--c); }
-.card blockquote { font: 400 26px/1.25 var(--display); margin: 12px 0 20px; }
-.neighbors { list-style: none; padding: 0; display: grid; gap: 8px; margin-top: 8px; }
-.neighbors li { padding: 10px 12px 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border-left: 2px solid var(--c); font-size: 13px; color: var(--ink-2); cursor: pointer; transition: 0.15s; }
-.neighbors li:hover { background: rgba(255, 255, 255, 0.09); color: var(--ink); }
+.card {
+  position: fixed; right: 28px; top: 96px; width: 390px; max-height: calc(100vh - 190px); overflow-y: auto; padding: 24px; z-index: 4;
+  border-top: 2px solid var(--c); animation: rise 0.35s ease-out; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 -12px 40px -20px var(--c), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.eyebrow.tint { color: var(--c); padding-right: 36px; }
+.card blockquote { font: 400 27px/1.22 var(--display); margin: 12px 0 20px; }
+.card h3 { font: italic 400 38px/1.05 var(--display); margin: 10px 0 6px; }
+.card .meta { color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.chips:empty { display: none; }
+.chip { padding: 4px 10px; border-radius: 999px; font-size: 12px; text-transform: capitalize; border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.ideas { list-style: none; padding: 0; display: grid; gap: 8px; margin-top: 8px; }
+.ideas li { padding: 10px 12px 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border-left: 2px solid var(--c); font-size: 13px; color: var(--ink-2); cursor: pointer; transition: 0.15s; display: grid; gap: 7px; }
+.ideas li:hover { background: rgba(255, 255, 255, 0.09); color: var(--ink); transform: translateX(2px); }
+.match { display: flex; align-items: center; gap: 8px; }
+.match i { height: 3px; border-radius: 3px; background: var(--c); box-shadow: 0 0 8px var(--c); flex: none; max-width: 60%; }
+.match b { font-weight: 500; font-size: 11px; letter-spacing: 0.06em; color: var(--c); }
+
+/* ── ask the sky ── */
+.ask {
+  position: fixed; top: 84px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px));
+  display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 16px; border-radius: 999px; z-index: 5; transition: 0.3s;
+}
+.ask svg { width: 17px; height: 17px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; flex: none; }
+.ask input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--ink); font: inherit; padding: 8px 0; }
+.ask input::placeholder { color: var(--ink-3); }
+.ask:focus-within { border-color: rgba(255, 211, 110, 0.55); box-shadow: 0 0 0 4px rgba(255, 211, 110, 0.08), 0 20px 60px rgba(0, 0, 0, 0.45); }
+.ask-status { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); white-space: nowrap; }
+.ask.busy .ask-status { color: var(--accent); animation: glow 1.2s ease-in-out infinite; }
+@keyframes glow { 50% { opacity: 0.45; } }
+
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.btn.icon { width: 40px; height: 40px; padding: 0; display: grid; place-items: center; font-weight: 600; }
+.btn.big { padding: 14px 22px; font-size: 15px; }
+
+.vignette { position: fixed; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%); }
+.label-layer { z-index: 2; }
+body.quizzing .hud-left, body.quizzing .ask { opacity: 0; pointer-events: none; }
+
+/* ── intro ── */
+.intro { position: fixed; left: 7vw; top: 50%; transform: translateY(-50%); width: min(560px, calc(100vw - 32px)); z-index: 8; display: none; }
+body.intro-open .intro { display: block; animation: rise 0.9s ease-out; }
+.label-layer { transition: opacity 0.6s; }
+body.intro-open .label-layer { opacity: 0; }
+body.intro-open .hud-left, body.intro-open .dock, body.intro-open .ask, body.intro-open .hint, body.intro-open .card { opacity: 0; pointer-events: none; }
+body.intro-open .vignette { background: linear-gradient(90deg, rgba(3, 4, 11, 0.92) 0%, rgba(3, 4, 11, 0.55) 45%, transparent 75%); }
+.intro h2 { font: 400 clamp(56px, 8vw, 104px)/0.92 var(--display); margin: 16px 0 22px; letter-spacing: -0.02em; }
+.intro h2 em { background: linear-gradient(100deg, #ffd36e, #ff7ac6 50%, #7cc4ff); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.1em; }
+.intro .sub { font-size: 17px; max-width: 480px; }
+.intro-actions { display: flex; gap: 10px; margin: 30px 0 34px; flex-wrap: wrap; }
+.intro-facts { list-style: none; padding: 0; display: flex; gap: 28px; flex-wrap: wrap; color: var(--ink-3); font-size: 13px; }
+.intro-facts b { display: block; font: 400 30px/1 var(--display); color: var(--ink); margin-bottom: 4px; }
+
+/* ── how it works ── */
+.modal-box.wide { width: min(1080px, 100%); }
+.pipeline { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 10px 0 4px; counter-reset: s; }
+.pipeline li {
+  position: relative; display: grid; gap: 6px; align-content: start; padding: 18px 16px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); animation: rise 0.5s ease-out both; animation-delay: calc(var(--i) * 90ms);
+}
+.pipeline li:not(:last-child)::after { content: '→'; position: absolute; right: -11px; top: 26px; color: var(--ink-3); font-size: 14px; }
+.step-icon { font-size: 22px; }
+.step-title { font-weight: 600; }
+.step-stat { font: italic 400 22px/1.1 var(--display); color: var(--accent); }
+.step-body { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.privacy { font-size: 13px; color: var(--ink-2); padding: 12px 16px; border-radius: 12px; background: rgba(138, 255, 193, 0.06); border: 1px solid rgba(138, 255, 193, 0.18); }
 
 .tooltip {
   position: fixed; left: 0; top: 0; max-width: 280px; padding: 8px 12px; border-radius: 10px; z-index: 6; pointer-events: none;
@@ -149,11 +210,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 760px) {
   .topbar { flex-wrap: wrap; padding: 14px 16px; gap: 10px; }
   .skies { order: 3; width: 100%; margin: 0; }
-  #open-paste { margin-left: auto; padding: 8px 12px; font-size: 13px; }
+  .top-actions { margin-left: auto; }
+  #open-paste { padding: 8px 12px; font-size: 13px; }
   .hud-left { left: 16px; right: 16px; bottom: 76px; width: auto; padding: 14px 16px; }
   .hud-left h1 { font-size: 34px; }
   .legend { display: none; }
-  .card { left: 16px; right: 16px; top: auto; bottom: 76px; width: auto; max-height: 60vh; overflow: auto; }
+  .card { left: 16px; right: 16px; top: auto; bottom: 76px; width: auto; max-height: 55vh; }
+  .ask { top: 118px; }
+  .ask-status:not(.busy .ask-status) { display: none; }
+  .ask.busy .ask-status { display: inline; }
+  .top-actions .btn.icon { width: 34px; height: 34px; }
+  .pipeline { grid-template-columns: 1fr; }
+  .pipeline li:not(:last-child)::after { content: '↓'; right: 16px; top: auto; bottom: -13px; }
+  .modal-box { max-height: calc(100vh - 32px); overflow-y: auto; padding: 24px; }
+  .intro { left: 16px; top: auto; bottom: 24px; transform: none; }
+  .intro .sub { font-size: 15px; }
+  body.intro-open .vignette { background: linear-gradient(0deg, rgba(3, 4, 11, 0.95) 10%, rgba(3, 4, 11, 0.4) 60%, transparent); }
   .card blockquote { font-size: 21px; }
   .dock { left: 16px; right: 16px; bottom: 16px; justify-content: center; }
   .quiz { bottom: 76px; }

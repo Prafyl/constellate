@@ -9,6 +9,7 @@ import type { Galaxy, Vec3 } from '../types';
 import { Stars, StarState } from './stars';
 import { createNebula, createStarfield } from './nebula';
 import { createConstellationLines, NeighborThreads } from './links';
+import { Meteors } from './meteors';
 
 interface Flight { fromPos: THREE.Vector3; toPos: THREE.Vector3; fromTarget: THREE.Vector3; toTarget: THREE.Vector3; t: number; dur: number }
 
@@ -33,6 +34,9 @@ export class Universe {
   private raycaster = new THREE.Raycaster();
   private clock = new THREE.Clock();
   private hovered: number | null = null;
+  private meteors = new Meteors();
+  private shift = 0;
+  private shiftTarget = 0;
 
   constructor(container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -56,7 +60,7 @@ export class Universe {
     this.controls.maxDistance = 320;
     this.controls.addEventListener('start', () => (this.flight = null));
 
-    this.scene.add(createStarfield(), this.world, this.threads.lines);
+    this.scene.add(createStarfield(), this.world, this.threads.lines, this.meteors.group);
     this.scene.fog = new THREE.FogExp2(0x03040b, 0.0022);
 
     this.composer = new EffectComposer(this.renderer);
@@ -117,8 +121,8 @@ export class Universe {
     this.stars?.setStates(fn);
   }
 
-  showThreads(id: number | null) {
-    if (this.galaxy) this.threads.show(this.galaxy, id);
+  showThreads(id: number | null, targets?: number[]) {
+    if (this.galaxy) this.threads.show(this.galaxy, id, targets);
   }
 
   /** Screen position of a star, for placing HTML overlays. */
@@ -158,14 +162,32 @@ export class Universe {
       if (f.t >= 1) this.flight = null;
     }
 
+    this.meteors.update(dt);
+    if (Math.abs(this.shift - this.shiftTarget) > 1e-4) {
+      this.shift += (this.shiftTarget - this.shift) * Math.min(1, dt * 3);
+      this.applyShift();
+    }
     this.controls.update();
     this.composer.render();
     this.labels.render(this.scene, this.camera);
   }
 
+  /** Slide the galaxy sideways (or up, on tall screens) to make room for overlay text. */
+  setShift(fraction: number) {
+    this.shiftTarget = fraction;
+  }
+
+  private applyShift() {
+    const w = innerWidth, h = innerHeight;
+    if (Math.abs(this.shift) < 1e-3) this.camera.clearViewOffset();
+    else if (w >= h) this.camera.setViewOffset(w, h, -this.shift * w, 0, w, h);
+    else this.camera.setViewOffset(w, h, 0, this.shift * h * 0.9, w, h);
+  }
+
   private resize() {
     const w = innerWidth, h = innerHeight;
     this.camera.aspect = w / h;
+    this.applyShift();
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h);
     this.composer.setSize(w, h);

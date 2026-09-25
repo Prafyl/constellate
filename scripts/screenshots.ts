@@ -19,6 +19,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function open(sky: string, w = 1920, h = 1080, dpr = 1) {
   const page = await browser.newPage();
+  page.on('pageerror', (e) => console.error('PAGE ERROR', e));
   await page.setViewport({ width: w, height: h, deviceScaleFactor: dpr });
   await page.goto(`${URL}?sky=${sky}`, { waitUntil: 'networkidle0' });
   await page.evaluate(() => document.fonts.ready);
@@ -54,7 +55,7 @@ for (const sky of ['nepal', 'biology', 'history', 'machine-learning']) {
 {
   const page = await open('nepal');
   await sleep(3500);
-  await js(page, `app.select(app.galaxy.stars.find(s => s.text.includes('Tenzing')).id)`);
+  await js(page, `app.selectStar(app.galaxy.stars.find(s => s.text.includes('Tenzing')).id)`);
   await sleep(2200);
   await shot(page, 'star-focus');
   await page.close();
@@ -78,7 +79,7 @@ for (const sky of ['nepal', 'biology', 'history', 'machine-learning']) {
 {
   const page = await open('machine-learning');
   await sleep(3500);
-  await js(page, `app.flyToConstellation(app.galaxy.constellations.sort((a,b)=>b.size-a.size)[0].id)`);
+  await js(page, `app.openConstellation([...app.galaxy.constellations].sort((a,b)=>b.size-a.size)[0].id)`);
   await sleep(2000);
   await shot(page, 'constellation');
   await page.close();
@@ -98,6 +99,39 @@ for (const sky of ['nepal', 'biology', 'history', 'machine-learning']) {
   await page.waitForFunction(`document.getElementById('forming').classList.contains('hidden')`, { timeout: 120000 });
   await sleep(4200);
   await shot(page, 'your-galaxy');
+  await page.close();
+}
+
+// 12. First-visit intro
+{
+  const page = await browser.newPage();
+  page.on('pageerror', (e) => console.error('PAGE ERROR', e));
+  await page.setViewport({ width: 1920, height: 1080 });
+  await page.goto(URL, { waitUntil: 'networkidle0' });
+  await page.evaluate(() => document.fonts.ready);
+  await sleep(4500);
+  await shot(page, 'intro');
+  await page.close();
+}
+
+// 13. Ask the sky (semantic search)
+{
+  const page = await open('nepal');
+  await sleep(3000);
+  await js(page, `document.getElementById('ask-input').value = 'Who first climbed Everest?'; document.getElementById('ask').requestSubmit()`);
+  await page.waitForFunction(`!document.getElementById('card').classList.contains('hidden')`, { timeout: 120000 });
+  await sleep(2400);
+  await shot(page, 'ask-the-sky');
+  await page.close();
+}
+
+// 14. How it works
+{
+  const page = await open('machine-learning');
+  await sleep(3000);
+  await js(page, `document.getElementById('open-info').click()`);
+  await sleep(1200);
+  await shot(page, 'how-it-works');
   await page.close();
 }
 

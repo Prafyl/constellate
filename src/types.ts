@@ -6,6 +6,10 @@ export interface Star {
   pos: Vec3;
   cluster: number;
   neighbors: number[];
+  /** Cosine similarity (0–1) to each neighbor, same order. */
+  scores: number[];
+  /** Sentence embedding, used for semantic search. */
+  vec: number[];
   /** The most distinctive term in this sentence, used for quiz questions. */
   term: string;
 }
