@@ -4,11 +4,11 @@
 
 ### Turn any text into a galaxy of ideas you can explore.
 
-Paste your notes, an essay or a textbook chapter. A neural network running **entirely in your browser** reads every idea, maps it by meaning, and lights it up as a star. Related ideas pull together into named constellations. Fly through them, then quiz yourself until every star burns gold.
+Paste your notes, an essay or a textbook chapter. A neural network running **entirely in your browser** reads every idea, maps it by meaning, and lights it up as a star. Related ideas pull together into named constellations. Fly through them, **ask the sky questions in plain English**, then quiz yourself until every star burns gold.
 
-**[✦ Launch the live demo](https://prafyl.github.io/constellate/)** · no sign-up · no API key · nothing leaves your device
+**[✦ Launch the live demo](https://constellate.vercel.app)** · no sign-up · no API key · nothing leaves your device
 
-<img src="docs/screenshots/galaxy-nepal.png" alt="The Nepal galaxy in Constellate: five glowing constellations of ideas" width="100%" />
+<img src="docs/screenshots/intro.png" alt="Constellate: every idea is a star" width="100%" />
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![three.js](https://img.shields.io/badge/three.js-000000?logo=threedotjs&logoColor=white)
@@ -30,10 +30,15 @@ Constellate makes that structure visible. It turns a wall of text into a sky you
 
 | | |
 |---|---|
-| <img src="docs/screenshots/star-focus.png" alt="A focused star with its closest ideas" /> | **✦ Every idea is a star.** Click one to fly to it and read it. Glowing threads reach out to its three closest ideas *by meaning*, not by where they happened to sit in the text. |
+| <img src="docs/screenshots/galaxy-nepal.png" alt="The Nepal galaxy" /> | **✦ Every idea is a star.** Related ideas cluster into constellations that are named automatically. Drag to orbit, scroll to zoom, and watch for shooting stars. |
+| <img src="docs/screenshots/ask-the-sky.png" alt="Ask the sky: semantic search" /> | **⌕ Ask the sky.** Type a question in plain English. The model embeds it and lights up the stars that answer it, ranked by meaning rather than keywords, with a match score for each. |
+| <img src="docs/screenshots/star-focus.png" alt="A focused star with its closest ideas" /> | **✧ Click any star** to fly to it. Glowing threads reach out to its three closest ideas *by meaning*, each with a similarity score. |
+| <img src="docs/screenshots/constellation.png" alt="Constellation panel" /> | **☄ Constellations.** Open one to see its keywords, how much of the sky it covers, and every idea inside it. |
 | <img src="docs/screenshots/quiz.png" alt="Quiz mode" /> | **◎ Star Quiz.** The camera flies to a star and blanks out its key term. Wrong answers are drawn from the same constellation, so they're plausible. Answer right and the star turns gold. |
 | <img src="docs/screenshots/forming.png" alt="The on-device model at work" /> | **🧠 Your own text, on your device.** Paste anything. A 23 MB sentence-embedding model downloads once, runs in a Web Worker, and builds your galaxy in seconds. Your words never touch a server. |
 | <img src="docs/screenshots/poster-nepal.png" alt="Exported poster" /> | **⤓ Poster export.** One click turns your galaxy into a share-ready 2400×1350 poster. |
+
+| <img src="docs/screenshots/how-it-works.png" alt="How it works" /> | **? How it works.** An in-app explainer walks through the pipeline using the live numbers of whichever galaxy you're viewing. |
 
 Plus: an auto-**Tour** that flies through every constellation, four hand-written demo galaxies (**Nepal**, **Biology**, **World History**, **Machine Learning**) that load instantly, and a layout that works on phones.
 
@@ -96,10 +101,10 @@ constellate/
 │   ├── build-demos.ts     # runs the ML pipeline in Node
 │   └── screenshots.ts     # captures docs/screenshots with headless Chrome
 └── src/
-    ├── galaxy/            # three.js: scene, star shader, nebulae, constellation lines
-    ├── ml/                # chunking, embeddings worker, UMAP, k-means, TF-IDF
+    ├── galaxy/            # three.js: scene, star shader, nebulae, constellation lines, meteors
+    ├── ml/                # chunking, embeddings worker + client, UMAP, k-means, TF-IDF
     ├── quiz/              # cloze question generator
-    ├── ui/                # poster export
+    ├── ui/                # side panel, how-it-works, poster export
     ├── styles/            # the whole look
     └── main.ts            # app shell & interactions
 ```

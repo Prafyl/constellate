@@ -14,7 +14,7 @@ Paste any text and watch an AI running entirely in your browser turn its ideas i
 Solo: Prafyl (Nepal)
 
 ## Link to demo
-https://prafyl.github.io/constellate/
+https://constellate.vercel.app
 
 ## Link to code
 https://github.com/Prafyl/constellate
@@ -42,6 +42,9 @@ Constellate turns any text into a galaxy of ideas.
 
 - **Every idea becomes a star.** Related ideas pull together into glowing, automatically named **constellations**.
 - **Click a star** to fly to it. Threads of light connect it to its three closest ideas *by meaning*, not by where they sat in the text.
+- **Ask the sky:** type a question in plain English ("Who first climbed Everest?") and the stars that answer it light up, ranked by meaning with a match score. It's real semantic search, running on your device.
+- **Constellation panels** show each group's keywords, its share of the sky, and every idea inside it.
+- **How it works:** an in-app explainer walks through the ML pipeline using the live numbers of the galaxy you're viewing.
 - **Star Quiz** flies you from star to star and blanks out each one's key term. The wrong answers come from the same constellation, so they're genuinely tricky. Every correct answer turns a star gold.
 - **Tour** flies through every constellation automatically.
 - **Poster** exports a 2400×1350 share-ready image of your galaxy.
@@ -78,6 +81,7 @@ Stack: TypeScript, Vite, three.js, Transformers.js, umap-js. It's a static site 
 - That simple classic algorithms (k-means, TF-IDF, Prim's MST) combined with a modern embedding model go a very long way.
 
 ### What's next
+- Semantic search across *all* your galaxies at once.
 - Upload PDFs and whole textbooks, with multiple galaxies linked into a universe.
 - Spaced repetition, so stars fade over time until you review them.
 - Nepali-language support with a multilingual embedding model.
@@ -99,11 +103,13 @@ typescript, three.js, webgl, glsl, transformers.js, hugging-face, onnx, umap, ma
 - AI assistance: Claude Code (Anthropic) was used to help write code and copy. AI tools are allowed under the Hack Atlantic rules.
 
 ## Screenshots to upload (in this order)
-1. `docs/screenshots/galaxy-nepal.png`: hero
-2. `docs/screenshots/star-focus.png`
-3. `docs/screenshots/quiz.png`
-4. `docs/screenshots/forming.png`
-5. `docs/screenshots/your-galaxy.png`
-6. `docs/screenshots/poster-nepal.png`
-7. `docs/screenshots/galaxy-machine-learning.png`
-8. `docs/screenshots/mobile.png`
+1. `docs/screenshots/intro.png`: hero
+2. `docs/screenshots/galaxy-nepal.png`
+3. `docs/screenshots/ask-the-sky.png`
+4. `docs/screenshots/star-focus.png`
+5. `docs/screenshots/quiz.png`
+6. `docs/screenshots/constellation.png`
+7. `docs/screenshots/how-it-works.png`
+8. `docs/screenshots/forming.png`
+9. `docs/screenshots/poster-nepal.png`
+10. `docs/screenshots/mobile.png`
