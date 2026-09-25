@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constellate — turn any text into a galaxy of ideas</title>
+    <meta name="description" content="Paste any text and watch an on-device AI map its ideas into a 3D galaxy you can explore and master." />
+    <meta property="og:title" content="Constellate" />
+    <meta property="og:description" content="Turn any text into a galaxy of ideas. AI that runs entirely in your browser." />
+    <meta property="og:image" content="og.png" />
+    <link rel="icon" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="universe"></div>
+
+    <header class="topbar">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2l2.6 10.1L28 16l-9.4 3.9L16 30l-2.6-10.1L4 16l9.4-3.9z" /></svg>
+        <span>Constellate</span>
+      </a>
+      <nav class="skies" id="skies" aria-label="Galaxies"></nav>
+      <button class="btn primary" id="open-paste">✦ Map your own text</button>
+    </header>
+
+    <section class="hud-left glass" id="hud">
+      <p class="eyebrow">You are exploring</p>
+      <h1 id="galaxy-title">…</h1>
+      <p class="stats" id="galaxy-stats"></p>
+      <ul class="legend" id="legend"></ul>
+    </section>
+
+    <aside class="card glass hidden" id="star-card">
+      <button class="close" id="card-close" aria-label="Close">×</button>
+      <p class="eyebrow" id="card-con"></p>
+      <blockquote id="card-text"></blockquote>
+      <p class="eyebrow dim">Closest ideas</p>
+      <ul class="neighbors" id="card-neighbors"></ul>
+    </aside>
+
+    <section class="quiz glass hidden" id="quiz">
+      <div class="quiz-top">
+        <span class="eyebrow">Star Quiz</span>
+        <span class="streak" id="quiz-streak">🔥 0</span>
+        <span class="mastery"><i id="quiz-bar"></i></span>
+        <span class="eyebrow dim" id="quiz-count"></span>
+        <button class="close" id="quiz-close" aria-label="End quiz">×</button>
+      </div>
+      <p class="quiz-prompt" id="quiz-prompt"></p>
+      <div class="options" id="quiz-options"></div>
+    </section>
+
+    <div class="dock">
+      <button class="btn" id="btn-quiz" title="Quiz yourself, star by star">◎ Quiz</button>
+      <button class="btn" id="btn-tour" title="Fly through every constellation">➤ Tour</button>
+      <button class="btn" id="btn-poster" title="Download a poster of this galaxy">⤓ Poster</button>
+    </div>
+
+    <p class="hint" id="hint">Drag to orbit · Scroll to zoom · Click any star</p>
+    <div class="tooltip hidden" id="tooltip"></div>
+
+    <div class="modal hidden" id="paste">
+      <div class="modal-box glass">
+        <button class="close" id="paste-close" aria-label="Close">×</button>
+        <p class="eyebrow">New galaxy</p>
+        <h2>Paste anything. Watch it become a universe.</h2>
+        <p class="sub">Notes, an essay, a textbook chapter, a Wikipedia article. An AI model reads every idea <b>right here in your browser</b>. Nothing is uploaded.</p>
+        <input id="paste-title" placeholder="Name your galaxy (e.g. Organic Chemistry)" maxlength="40" />
+        <textarea id="paste-text" placeholder="Paste at least a few paragraphs…"></textarea>
+        <div class="modal-foot">
+          <span class="foot-left"><button class="linkish" id="paste-sample">✦ Try a sample: The Solar System</button><span class="eyebrow dim" id="paste-count">0 ideas</span></span>
+          <button class="btn primary" id="paste-go" disabled>Ignite ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="forming hidden" id="forming">
+      <div class="orb"></div>
+      <p class="eyebrow" id="forming-stage">Waking the model</p>
+      <div class="bar"><i id="forming-bar"></i></div>
+      <p class="sub">Running a neural network on your device. No servers, no sign-up.</p>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

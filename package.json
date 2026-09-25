@@ -1,0 +1,41 @@
+{
+  "name": "constellate",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "demos": "tsx scripts/build-demos.ts",
+    "screenshots": "tsx scripts/screenshots.ts"
+  },
+  "author": "Prafyl",
+  "license": "MIT",
+  "description": "Turn any text into a 3D galaxy of ideas you can explore — AI that runs entirely in your browser.",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0",
+    "three": "^0.186.1",
+    "umap-js": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/three": "^0.186.0",
+    "puppeteer-core": "^25.12.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Prafyl/constellate"
+  },
+  "homepage": "https://prafyl.github.io/constellate/",
+  "keywords": [
+    "three.js",
+    "transformers.js",
+    "machine-learning",
+    "education",
+    "visualization",
+    "umap"
+  ]
+}
