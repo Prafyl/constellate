@@ -6,7 +6,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "demos": "tsx scripts/build-demos.ts",
-    "screenshots": "tsx scripts/screenshots.ts"
+    "screenshots": "tsx scripts/screenshots.ts",
+    "gallery": "tsx scripts/gallery.ts",
+    "video": "tsx scripts/record-video.ts"
   },
   "author": "Prafyl",
   "license": "MIT",
