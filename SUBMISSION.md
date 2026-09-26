@@ -51,6 +51,14 @@ Constellate turns any text into a galaxy of ideas.
 - **Map a document:** import a Wikipedia article by link, drop in a PDF / .txt / .md file (lecture notes, papers, book chapters), or paste text. A neural network builds your galaxy **on your device**. There's no sign-up and no API key, and nothing is uploaded. It's built for long reads: *Quantum mechanics* (7,963 words) becomes 14 topics in about 30 seconds, and each idea keeps the section it came from.
 - **Study guide export:** downloads a Markdown outline with one chapter per topic, its key terms, and every idea as a checklist (ideas you've mastered in the quiz come pre-ticked).
 
+**Built for students.** A 🎓 *For students* page shows four real study situations (the night before an exam, reading a research paper, writing an essay, a term of lecture notes), with a *Try it* button on every feature. **▶ Watch the interactive demo** then plays through all of it live: a spotlight moves across the real interface while the app runs each feature and explains how to use it.
+
+- **✧ Key ideas:** the most central idea of every topic (the one closest to the topic's centre in meaning-space). It's the whole document in one minute.
+- **✎ Explain it back:** the Feynman technique, checked by AI. You explain a topic from memory. Each sentence you write is embedded and matched against the topic's 8 core ideas, and you see which you covered (they turn gold) and which you missed. One sentence can count for at most two ideas, so "ethics is about right and wrong" can't claim the whole topic.
+- **◎ Quiz this topic**, with **saved progress:** mastered ideas are remembered on your device, and a gold bar under each topic fills as you go, so your weak spots are visible at a glance.
+- **⟷ Connections:** each topic lists the topics it links to most, and the ideas that bridge them, which is often the argument of an essay.
+- The **study guide** now opens each chapter with its key idea and your mastery count.
+
 It ships with five galaxies that load instantly, led by Wikipedia's **Philosophy** article (6,364 words → 13 topics), plus **Nepal** (where I'm from), **Biology**, **World History** and **Machine Learning**.
 
 ### How I built it

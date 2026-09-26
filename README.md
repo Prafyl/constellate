@@ -43,6 +43,20 @@ Constellate makes that structure visible. It turns a wall of text into a sky you
 
 Plus: **☰ Study guide** export (a Markdown outline: one chapter per topic, key terms, and every idea as a checklist), an auto-**Tour** that flies through every topic, five demo galaxies that load instantly (Wikipedia's **Philosophy** at 6,364 words, plus **Nepal**, **Biology**, **World History** and **Machine Learning**), and a layout that works on phones.
 
+## Built for students
+
+Open **🎓 For students** in the app for use cases and a *Try it* button on every feature, or press **▶ Watch the interactive demo** on the intro. It spotlights the real UI and runs each feature live.
+
+| Feature | What it does | How to use it |
+|---|---|---|
+| ✧ Key ideas | The most central idea of every topic: the document in one minute | Dock → **Key ideas** |
+| ⌕ Ask the sky | Semantic search: ask in your own words | Top bar, press Enter |
+| ✎ Explain it back | Feynman technique checked by AI: which core ideas you covered or missed | Open a topic → **Explain it back** |
+| ◎ Quiz / Quiz this topic | Fill-in-the-blank from the text; stars turn gold, topics fill up | Dock → **Quiz**, or inside a topic |
+| ⟷ Connections | Linked topics and the ideas that bridge them (good for essays) | Open a topic → **Connects to** |
+| ☰ Study guide | Markdown chapters with key idea, key terms and checklists | Dock → **Study guide** |
+| 💾 Saved progress | Mastery is remembered on this device | Automatic |
+
 ## How it works
 
 ```mermaid
