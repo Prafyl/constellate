@@ -5,22 +5,25 @@ Copy each block into the matching Devpost field.
 ---
 
 ## Project name
-Constellate
+Constellate: Turn any reading into a galaxy of ideas
 
-## Tagline / short description (≤ 200 chars)
-Paste any text and watch an AI running entirely in your browser turn its ideas into a 3D galaxy you can fly through, then quiz yourself until every star burns gold.
+## Elevator pitch (≤ 200 chars)
+Turn a 40-page reading into a 3D galaxy of ideas. AI running in your browser maps every topic, then helps you study it: key ideas, search by meaning, explain-it-back and quizzes.
+
+## Thumbnail (3:2)
+`docs/thumbnail.png`
 
 ## Teammates
 Solo: Prafyl (Nepal)
 
 ## Link to demo
-https://constellate.vercel.app
+https://constellate-black.vercel.app
 
 ## Link to code
 https://github.com/Prafyl/constellate
 
 ## Setup instructions
-No setup needed for the demo: open the link, then click any star, press **Quiz**, or hit **✦ Map a document** and pick a Wikipedia article (for example *Quantum mechanics*) or drop in a PDF.
+No setup needed for the demo. Open the link and press **Watch the interactive demo**, or click any star, open **For students**, or press **Map a document** and pick a Wikipedia article (for example *Quantum mechanics*) or drop in a PDF.
 
 To run locally (Node 20+):
 ```
@@ -32,96 +35,119 @@ npm run dev
 
 ---
 
-## About the project (Devpost "story")
+## About the project
 
-### Inspiration
-Notes are a flat list, but knowledge is a web. When I study, the hard part isn't reading each sentence. It's seeing how the ideas connect: which ones belong together, and which one leads to the next. I wanted to *see* the shape of what I'm learning, and to make revising it feel like exploring rather than rereading.
+## Inspiration
 
-### What it does
-Constellate turns any text into a galaxy of ideas.
+The night before an exam I usually have a 30 or 40 page chapter open and no real plan. Reading it isn't what's hard. What's hard is knowing what the main topics even are, which parts connect to which, and what I should actually spend my time on.
 
-- **Every idea becomes a star.** Related ideas pull together into glowing, automatically named **constellations**.
-- **Click a star** to fly to it. Threads of light connect it to its three closest ideas *by meaning*, not by where they sat in the text.
-- **Ask the sky:** type a question in plain English ("Who first climbed Everest?") and the stars that answer it light up, ranked by meaning with a match score. It's real semantic search, running on your device.
-- **Constellation panels** show each group's keywords, its share of the sky, and every idea inside it.
-- **How it works:** an in-app explainer walks through the ML pipeline using the live numbers of the galaxy you're viewing.
-- **Star Quiz** flies you from star to star and blanks out each one's key term. The wrong answers come from the same constellation, so they're genuinely tricky. Every correct answer turns a star gold.
-- **Tour** flies through every constellation automatically.
-- **Poster** exports a 2400×1350 share-ready image of your galaxy.
-- **Map a document:** import a Wikipedia article by link, drop in a PDF / .txt / .md file (lecture notes, papers, book chapters), or paste text. A neural network builds your galaxy **on your device**. There's no sign-up and no API key, and nothing is uploaded. It's built for long reads: *Quantum mechanics* (7,963 words) becomes 14 topics in about 30 seconds, and each idea keeps the section it came from.
-- **Study guide export:** downloads a Markdown outline with one chapter per topic, its key terms, and every idea as a checklist (ideas you've mastered in the quiz come pre-ticked).
+My notes never helped with that because they're just a long list. But the way ideas actually fit together is more like a web. So I wanted a way to look at a whole reading at once and see its shape, and then use that shape to study.
 
-**Built for students.** A 🎓 *For students* page shows four real study situations (the night before an exam, reading a research paper, writing an essay, a term of lecture notes), with a *Try it* button on every feature. **▶ Watch the interactive demo** then plays through all of it live: a spotlight moves across the real interface while the app runs each feature and explains how to use it.
+The night sky felt like the right picture for it. People have been grouping stars into constellations to make sense of them for thousands of years. I figured the same thing could work for ideas.
 
-- **✧ Key ideas:** the most central idea of every topic (the one closest to the topic's centre in meaning-space). It's the whole document in one minute.
-- **✎ Explain it back:** the Feynman technique, checked by AI. You explain a topic from memory. Each sentence you write is embedded and matched against the topic's 8 core ideas, and you see which you covered (they turn gold) and which you missed. One sentence can count for at most two ideas, so "ethics is about right and wrong" can't claim the whole topic.
-- **◎ Quiz this topic**, with **saved progress:** mastered ideas are remembered on your device, and a gold bar under each topic fills as you go, so your weak spots are visible at a glance.
-- **⟷ Connections:** each topic lists the topics it links to most, and the ideas that bridge them, which is often the argument of an essay.
-- The **study guide** now opens each chapter with its key idea and your mastery count.
+## What it does
 
-It ships with five galaxies that load instantly, led by Wikipedia's **Philosophy** article (6,364 words → 13 topics), plus **Nepal** (where I'm from), **Biology**, **World History** and **Machine Learning**.
+You give Constellate a long reading: a Wikipedia article, a PDF of a chapter, or your own lecture notes. It turns that reading into a 3D galaxy you can fly around in.
 
-### How I built it
-A fully client-side ML pipeline feeding a custom three.js renderer:
+Each idea in the text becomes a star. Ideas that mean similar things end up close together and form constellations, and each one gets a name based on what it's about. For example, the Philosophy article on Wikipedia is about 6,400 words, and it comes out as 318 ideas in 13 topics. I never told it how many topics to find. It works that out from the text.
 
-1. **Embeddings.** `all-MiniLM-L6-v2`, quantized to 8-bit, runs in the browser via Hugging Face **Transformers.js** inside a Web Worker. It turns each sentence into a 384-dimensional meaning vector.
-2. **UMAP** projects 384-D into 3-D, so ideas that mean similar things end up close in space.
-3. **k-means** is run for 3 to 16 topics, and the **silhouette score** keeps the richest clean split, so a short note gets 3 topics and a long article gets 13 to 15. **TF-IDF** (treating each cluster as a document) names each constellation after the words that make it distinctive.
-4. **Rendering.** Each constellation's figure is its **minimum spanning tree**, which is why it reads like a real star chart. The stars are a single draw call with a custom GLSL shader (twinkle, glow, a spiral "big bang" as the galaxy forms). Unreal bloom, additive nebula sprites and dust particles complete the look.
-5. The demo galaxies are built by the **same pipeline in Node** ahead of time, so the first load is instant.
+From there you can actually study with it:
 
-Stack: TypeScript, Vite, three.js, Transformers.js, umap-js. PDF.js reads PDFs in the browser. It's a static site on Vercel.
+- Click any star to read that idea and see which section it came from. It also links to the three most similar ideas in the whole document, even if they're far apart in the original.
+- Ask a question in normal words, like "how do we know what is true?", and the most relevant ideas light up. It matches by meaning, so the answer doesn't need to use the same words as your question.
+- Key ideas shows the one most central idea from each topic. It's basically a one-minute summary of the whole thing.
+- Explain it back is my favourite part. You pick a topic, write what you remember in your own words, and it tells you which of the main ideas you got, which ones you only half covered, and which ones you missed and should reread.
+- There's a quiz that blanks out key words from real sentences in the text. The wrong options come from the same topic, so you can't just guess. Every idea you get right turns gold, and your progress is saved for next time.
+- Each topic also shows which other topics it's connected to, and the ideas that link them. I found this really useful for essays.
+- You can download everything as a study guide with a checklist for each topic.
 
-### Challenges I ran into
-- **Making it fast on first click.** Downloading a model before showing anything would lose people, so I pre-computed the demo skies with the exact same code path in Node. The model loads only when you paste your own text.
-- **Naming clusters without an LLM.** Raw word counts gave names like "Cells & Cell". Treating each cluster as a TF-IDF document, stemming and de-duplicating across the sky produced names like *Evolution & Populations* and *Kathmandu & Valley*.
-- **Scaling to real documents.** My first version silently kept only the first 260 sentences. Now long texts are grouped into passages so the whole document is covered, Wikipedia's LaTeX and citation marks are stripped, and the topic count is chosen by silhouette score instead of a formula.
-- **Making it look like a star chart, not a scatter plot.** Connecting every star to its neighbors was a tangle. The minimum spanning tree per cluster gave clean, recognizable figures.
-- **Rendering details.** Stars turned into squares up close (plain points have no shape), and the bloom washed out everything until I rebalanced it.
+The part I care about most is that it all runs in your browser. Nothing gets uploaded, you don't need an account, and there's no API key.
 
-### Accomplishments I'm proud of
-- Real ML running **100% in the browser**, private by design, and working offline after the first load.
-- It works on **any** text you give it, not just the demos.
-- It looks like something you'd want to screenshot, and it has a button that does exactly that.
+There's also a page for students with some real situations it helps with, and a guided demo that walks through every feature on the actual app.
 
-### What I learned
-- How sentence embeddings actually encode meaning, and how UMAP preserves neighborhoods when crushing dimensions.
-- Running transformer models client-side with ONNX/WASM, and keeping the UI smooth with Web Workers.
-- Writing custom GLSL shaders and a post-processing pipeline in three.js.
-- That simple classic algorithms (k-means, TF-IDF, Prim's MST) combined with a modern embedding model go a very long way.
+## How I built it
 
-### What's next
-- Semantic search across *all* your galaxies at once.
-- Whole textbooks, with multiple galaxies linked into a universe.
-- Spaced repetition, so stars fade over time until you review them.
-- Nepali-language support with a multilingual embedding model.
-- Shareable galaxy links.
+The whole thing is a static website. There's no server doing the AI work.
+
+First the text gets cleaned up. That means removing citation numbers, links, and the leftover math code you get from Wikipedia. Then it's split into ideas. Long documents get grouped into short passages so the entire document fits instead of getting cut off.
+
+Each idea is turned into a list of 384 numbers that represents its meaning. This uses a small language model called all-MiniLM-L6-v2, running in the browser with Transformers.js. Two ideas count as similar when their vectors point the same way:
+
+$$\text{similarity}(a,b)=\frac{a\cdot b}{\lVert a\rVert\,\lVert b\rVert}$$
+
+Then UMAP squashes those 384 dimensions down to 3, so I can place the ideas in space and similar ones stay near each other. After that I group them with k-means. I didn't want to hard-code the number of topics, so it tries everything from 3 to 16 and uses the silhouette score to pick the split that's detailed but still clean. Topic names come from TF-IDF, which finds the words that are common in one group but rare in the others.
+
+The key idea for each topic is just the star closest to the middle of that group. The lines that make each constellation are a minimum spanning tree, which is what makes them look like a real star chart and not a tangled mess. The stars themselves are drawn with a custom shader in three.js, with bloom on top for the glow.
+
+The demo galaxies on the site are built ahead of time with the exact same code running in Node, so the page loads instantly and you only download the model when you map your own document.
+
+## Challenges I ran into
+
+The hardest problem was making Explain it back honest. My first version gave 8 out of 8 to everything. Even "ethics is about right and wrong" got full marks. The main ideas in a topic are all pretty similar to each other, so one vague sentence ended up matching all of them. I fixed it by letting each sentence count for at most two ideas, and by tuning the cutoff on real test answers. Now a decent three-sentence answer gets about 3 out of 8, a one-liner gets 2, and something off topic gets 0. That felt a lot more fair.
+
+Long documents were another problem. At first I was only keeping the first 260 sentences without realising it, so most of a big article just vanished. Grouping sentences into passages fixed that. Now the Quantum mechanics article, which is almost 8,000 words, maps into 14 topics in about 30 seconds.
+
+Naming topics without using a chatbot took a lot of trial and error too. My early names were things like "Cells & Cell". TF-IDF plus removing duplicate word forms got it to names that actually make sense.
+
+And I wanted the first impression to be fast. Making someone wait for a model download before they see anything felt like a bad start, which is why the demo galaxies are prebuilt.
+
+## Accomplishments that I'm proud of
+
+I'm proud that real AI runs entirely in the browser. It keeps your documents private, and after the first load it even works offline.
+
+It also works on whatever you give it, not only the examples I picked. And the study features are based on techniques that actually help people learn, like testing yourself and explaining things in your own words.
+
+## What I learned
+
+I learned a lot about how sentence embeddings capture meaning, and how UMAP keeps nearby things together when you throw away most of the dimensions. I also learned how to run a model in the browser without freezing the page, by moving the work into a Web Worker.
+
+The biggest lesson was about AI feedback: if a score praises everything, it's useless. Calibrating it against real answers mattered more than any clever idea.
+
+I also learned that some old, simple algorithms like k-means, TF-IDF and minimum spanning trees are still really powerful when you combine them with a modern language model.
+
+## What's next
+
+- Stars that slowly fade over time until you review them again, like spaced repetition
+- Linking several chapters together into one bigger map
+- Support for Nepali using a multilingual model
+- Shareable links, so a whole class can study the same galaxy
 
 ---
 
-## Built with (Devpost tags)
-typescript, three.js, webgl, glsl, transformers.js, hugging-face, onnx, umap, machine-learning, vite, github-pages
+## Built with (Devpost tags, 24 of 25)
+typescript, javascript, three.js, webgl, glsl, transformers.js, hugging-face, onnx, webgpu, webassembly, web-workers, machine-learning, natural-language-processing, umap, k-means, tf-idf, pdf.js, wikipedia-api, vite, vercel, puppeteer, ffmpeg, html5, css3
 
 ## Tools & credits
 - three.js (MIT): rendering, UnrealBloomPass, OrbitControls, CSS2DRenderer
 - Transformers.js by Hugging Face (Apache 2.0): in-browser inference
 - Model: Xenova/all-MiniLM-L6-v2, ONNX port of sentence-transformers/all-MiniLM-L6-v2 (Apache 2.0)
 - umap-js by Google PAIR (Apache 2.0)
-- Vite + TypeScript
 - PDF.js by Mozilla (Apache 2.0): PDF text extraction
+- Vite + TypeScript
+- Puppeteer and ffmpeg: gallery images and the demo video
 - Philosophy demo text: Wikipedia, "Philosophy" (CC BY-SA 4.0)
 - Fonts: Geist and Geist Mono (Google Fonts, SIL OFL)
-- Demo texts written for this project
+- Other demo texts written for this project
 - AI assistance: Claude Code (Anthropic) was used to help write code and copy. AI tools are allowed under the Hack Atlantic rules.
 
-## Screenshots to upload (in this order)
-1. `docs/screenshots/intro.png`: hero
-2. `docs/screenshots/galaxy-philosophy.png`: 6,364-word article → 13 topics
-3. `docs/screenshots/ask-the-sky.png`
-4. `docs/screenshots/star-focus.png`
-5. `docs/screenshots/import.png`
-6. `docs/screenshots/constellation.png`
-7. `docs/screenshots/quiz.png`
-8. `docs/screenshots/how-it-works.png`
-9. `docs/screenshots/forming.png`
-10. `docs/screenshots/mobile.png`
+## Image gallery (upload in this order, 15 of 15)
+| File | Caption |
+|---|---|
+| `docs/gallery/01-intro.png` | Every idea is a star: drop in any long reading and AI on your device maps it. |
+| `docs/gallery/02-galaxy.png` | Wikipedia's Philosophy article (6,364 words) as 318 ideas in 13 topics the AI found on its own. |
+| `docs/gallery/03-topic.png` | Open a topic: key idea first, key terms, and the topics it connects to. |
+| `docs/gallery/04-star.png` | Every star is one idea; threads link it to its closest ideas anywhere in the text. |
+| `docs/gallery/05-ask-the-sky.png` | Ask the sky: search by meaning, not keywords. |
+| `docs/gallery/06-key-ideas.png` | Key ideas: the most central idea of every topic, the whole document in one minute. |
+| `docs/gallery/07-explain-it-back-write.png` | Explain it back: the Feynman technique. Explain a topic from memory. |
+| `docs/gallery/08-explain-it-back-result.png` | It shows what you explained, what you touched on, and exactly what to reread. |
+| `docs/gallery/09-quiz.png` | Quiz this topic: questions from the text itself; mastered stars burn gold. |
+| `docs/gallery/10-connections.png` | Connections: the ideas that bridge two topics, often the argument of an essay. |
+| `docs/gallery/11-for-students.png` | For students: real study situations, with a live "Try it" on every feature. |
+| `docs/gallery/12-interactive-demo.png` | The interactive demo spotlights the real interface while each feature runs live. |
+| `docs/gallery/13-map-a-document.png` | Map any Wikipedia article, PDF or lecture notes. Nothing is uploaded. |
+| `docs/gallery/14-new-galaxy.png` | Photosynthesis, mapped live in the browser: 15 topics in seconds, no servers. |
+| `docs/gallery/15-mobile.png` | Study anywhere: the layout works on your phone. |
+
+## Video
+Record with `npm run video` (dev server on port 4317), then upload `video/constellate-demo.mp4` to YouTube and paste the link into Devpost. It runs 2:25 with no audio, so add music in YouTube Studio if you like.
