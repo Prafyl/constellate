@@ -3,6 +3,8 @@ export type Vec3 = [number, number, number];
 export interface Star {
   id: number;
   text: string;
+  /** Heading of the document section this idea came from. */
+  section?: string;
   pos: Vec3;
   cluster: number;
   neighbors: number[];
@@ -25,6 +27,9 @@ export interface Constellation {
 
 export interface Galaxy {
   title: string;
+  /** Where the text came from (URL or file name). */
+  source?: string;
+  words: number;
   createdAt: string;
   stars: Star[];
   constellations: Constellation[];
