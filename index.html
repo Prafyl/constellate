@@ -26,6 +26,7 @@
       </a>
       <nav class="skies" id="skies" aria-label="Galaxies"></nav>
       <div class="top-actions">
+        <button class="btn" id="open-guide" title="Student guide and interactive demo">For students</button>
         <button class="btn icon" id="open-info" title="How it works" aria-label="How it works">?</button>
         <button class="btn primary" id="open-paste">✦ Map a document</button>
       </div>
@@ -51,13 +52,15 @@
       <p class="eyebrow tint" id="card-eyebrow"></p>
       <div id="card-head"></div>
       <div class="chips" id="card-chips"></div>
+      <div class="card-actions" id="card-actions"></div>
+      <div class="card-related" id="card-related"></div>
       <p class="eyebrow dim" id="card-list-label"></p>
       <ul class="ideas" id="card-list"></ul>
     </aside>
 
     <section class="quiz glass hidden" id="quiz">
       <div class="quiz-top">
-        <span class="eyebrow">Star Quiz</span>
+        <span class="eyebrow" id="quiz-label">Star Quiz</span>
         <span class="streak" id="quiz-streak">🔥 0</span>
         <span class="mastery"><i id="quiz-bar"></i></span>
         <span class="eyebrow dim" id="quiz-count"></span>
@@ -68,6 +71,7 @@
     </section>
 
     <div class="dock">
+      <button class="btn" id="btn-keys" title="The most central idea of every topic">✧ Key ideas</button>
       <button class="btn" id="btn-quiz" title="Quiz yourself, star by star">◎ Quiz</button>
       <button class="btn" id="btn-tour" title="Fly through every constellation">➤ Tour</button>
       <button class="btn" id="btn-guide" title="Download an organised study guide (Markdown)">☰ Study guide</button>
@@ -84,8 +88,9 @@
       <p class="sub">Drop in a textbook chapter, a research paper, lecture notes or a Wikipedia article. A neural network on your device reads every idea, groups them into topics by meaning, and turns hours of reading into a map you can explore, search and study from.</p>
       <div class="intro-actions">
         <button class="btn primary big" id="intro-go">Explore the sky ✦</button>
-        <button class="btn big" id="intro-how">How it works</button>
+        <button class="btn big" id="intro-demo">▶ Watch the interactive demo</button>
       </div>
+      <p class="intro-link"><button class="linkish" id="intro-how">How does it work?</button> · <button class="linkish" id="intro-guide">What can students do with it?</button></p>
       <ul class="intro-facts">
         <li><b>6,364</b> words in the demo</li>
         <li><b>13</b> topics, found by AI</li>
@@ -104,6 +109,70 @@
         <p class="privacy">🔒 Your text never leaves this tab. The model is downloaded once from Hugging Face, cached by your browser, and then works offline.</p>
       </div>
     </div>
+
+    <!-- For students -->
+    <div class="modal hidden" id="guide">
+      <div class="modal-box wide glass">
+        <button class="close" id="guide-close" aria-label="Close">×</button>
+        <p class="eyebrow">For students</p>
+        <h2>Turn a 40-page reading into a study plan</h2>
+        <p class="sub">Built for the moment you open a long chapter, paper or pile of lecture notes and don't know where to start.</p>
+
+        <div class="uses">
+          <article><span>🌙</span><b>The night before the exam</b><p>Map the chapter, read the <em>Key ideas</em> for a one-minute summary, then <em>Quiz this topic</em> on your weakest topics until they burn gold.</p></article>
+          <article><span>🔬</span><b>Reading a research paper</b><p>See every topic at a glance, then <em>Ask the sky</em> “what method did they use?” and jump straight to the answer. No Ctrl+F guessing.</p></article>
+          <article><span>✍️</span><b>Writing an essay</b><p><em>Connects to</em> shows how two topics link, which is often your argument. Every idea shows its section, so it's easy to cite.</p></article>
+          <article><span>🗂️</span><b>Lecture notes all term</b><p>Paste each week's notes, test yourself with <em>Explain it back</em>, and export a checklist <em>Study guide</em> to revise from.</p></article>
+        </div>
+
+        <p class="eyebrow dim">Features · press Try it to see each one live</p>
+        <div class="features">
+          <article><b>✧ Key ideas</b><p>The single most representative idea of every topic: the whole document in a minute.</p><small>Press <kbd>Key ideas</kbd> in the dock</small><button class="chip-btn" data-try="keys">Try it ▶</button></article>
+          <article><b>⌕ Ask the sky</b><p>Search by meaning. Ask in your own words and the best-matching ideas light up.</p><small>Type in the top bar, press <kbd>Enter</kbd></small><button class="chip-btn" data-try="ask">Try it ▶</button></article>
+          <article><b>✎ Explain it back</b><p>The Feynman technique, checked by AI: write what you remember and see which core ideas you covered or missed.</p><small>Open a topic → <kbd>Explain it back</kbd></small><button class="chip-btn" data-try="explain">Try it ▶</button></article>
+          <article><b>◎ Quiz</b><p>Fill-in-the-blank questions made from the text. Mastered stars turn gold and topics fill up in the list.</p><small><kbd>Quiz</kbd>, or open a topic → <kbd>Quiz this topic</kbd></small><button class="chip-btn" data-try="quiz">Try it ▶</button></article>
+          <article><b>⟷ Connections</b><p>Which topics link to each other, and the ideas that bridge them. Good for essays and for seeing the big picture.</p><small>Open a topic → <kbd>Connects to</kbd></small><button class="chip-btn" data-try="connect">Try it ▶</button></article>
+          <article><b>☰ Study guide</b><p>A Markdown file with each topic's key idea, key terms and a checklist of every idea, your progress ticked.</p><small>Press <kbd>Study guide</kbd> in the dock</small><button class="chip-btn" data-try="guide">Try it ▶</button></article>
+          <article><b>💾 Saved progress</b><p>Mastered ideas are remembered on this device, so you can close the tab and pick up tomorrow where you left off.</p><small>Automatic, nothing to do</small><button class="chip-btn" data-try="quiz">Try it ▶</button></article>
+          <article><b>✦ Any document</b><p>A Wikipedia link, a PDF, a .txt/.md file or pasted notes. Up to about 600 ideas, all processed on your device.</p><small>Press <kbd>Map a document</kbd></small><button class="chip-btn" data-try="import">Try it ▶</button></article>
+        </div>
+
+        <div class="guide-foot">
+          <button class="btn primary big" id="guide-demo">▶ Start the interactive demo</button>
+          <span class="sub">About a minute. The app runs every feature live while you watch.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explain it back -->
+    <div class="modal hidden" id="explain">
+      <div class="modal-box glass">
+        <button class="close" id="explain-close" aria-label="Close">×</button>
+        <p class="eyebrow">✎ Explain it back</p>
+        <h2 id="explain-title">Explain this topic in your own words</h2>
+        <p class="sub">The Feynman technique: if you can explain it simply, you understand it. Write from memory, without looking. The AI checks which of the topic's core ideas you covered, by meaning, not by keywords.</p>
+        <textarea id="explain-text" placeholder="Write a few sentences about what this topic is about…"></textarea>
+        <div class="modal-foot">
+          <span class="eyebrow dim" id="explain-count">0 words</span>
+          <button class="btn primary" id="explain-go" disabled>Check my understanding ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive demo: spotlight + coach card -->
+    <div class="spot" id="spot"></div>
+    <aside class="coach glass" id="coach">
+      <p class="eyebrow" id="coach-eyebrow"></p>
+      <h3 id="coach-title"></h3>
+      <p class="coach-body" id="coach-body"></p>
+      <p class="coach-how"><b>How to use</b><span id="coach-how"></span></p>
+      <div class="coach-foot">
+        <span class="coach-dots" id="coach-dots"></span>
+        <button class="linkish" id="coach-skip">Skip demo</button>
+        <button class="btn small" id="coach-back" aria-label="Back">←</button>
+        <button class="btn small primary" id="coach-next">Next →</button>
+      </div>
+    </aside>
 
     <!-- Bring your own document -->
     <div class="modal hidden" id="paste">
