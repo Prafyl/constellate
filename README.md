@@ -4,7 +4,7 @@
 
 ### Turn any text into a galaxy of ideas you can explore.
 
-Paste your notes, an essay or a textbook chapter. A neural network running **entirely in your browser** reads every idea, maps it by meaning, and lights it up as a star. Related ideas pull together into named constellations. Fly through them, **ask the sky questions in plain English**, then quiz yourself until every star burns gold.
+Drop in a textbook chapter, a research paper, lecture notes or a Wikipedia article. A neural network running **entirely in your browser** reads every idea, maps it by meaning, and lights it up as a star. Related ideas pull together into named topics, and how many depends on how rich the document is. Fly through them, **ask the sky questions in plain English**, then quiz yourself until every star burns gold.
 
 **[✦ Launch the live demo](https://constellate.vercel.app)** · no sign-up · no API key · nothing leaves your device
 
@@ -35,12 +35,13 @@ Constellate makes that structure visible. It turns a wall of text into a sky you
 | <img src="docs/screenshots/star-focus.png" alt="A focused star with its closest ideas" /> | **✧ Click any star** to fly to it. Glowing threads reach out to its three closest ideas *by meaning*, each with a similarity score. |
 | <img src="docs/screenshots/constellation.png" alt="Constellation panel" /> | **☄ Constellations.** Open one to see its keywords, how much of the sky it covers, and every idea inside it. |
 | <img src="docs/screenshots/quiz.png" alt="Quiz mode" /> | **◎ Star Quiz.** The camera flies to a star and blanks out its key term. Wrong answers are drawn from the same constellation, so they're plausible. Answer right and the star turns gold. |
+| <img src="docs/screenshots/import.png" alt="Map a document" /> | **📄 Built for long documents.** Import a Wikipedia article by link, drop in a PDF / .txt / .md file, or paste text. The whole document is mapped: Wikipedia's *Quantum mechanics* (7,963 words) becomes 14 topics in about 30 seconds, and every star remembers which section it came from. |
 | <img src="docs/screenshots/forming.png" alt="The on-device model at work" /> | **🧠 Your own text, on your device.** Paste anything. A 23 MB sentence-embedding model downloads once, runs in a Web Worker, and builds your galaxy in seconds. Your words never touch a server. |
 | <img src="docs/screenshots/poster-nepal.png" alt="Exported poster" /> | **⤓ Poster export.** One click turns your galaxy into a share-ready 2400×1350 poster. |
 
 | <img src="docs/screenshots/how-it-works.png" alt="How it works" /> | **? How it works.** An in-app explainer walks through the pipeline using the live numbers of whichever galaxy you're viewing. |
 
-Plus: an auto-**Tour** that flies through every constellation, four hand-written demo galaxies (**Nepal**, **Biology**, **World History**, **Machine Learning**) that load instantly, and a layout that works on phones.
+Plus: **☰ Study guide** export (a Markdown outline: one chapter per topic, key terms, and every idea as a checklist), an auto-**Tour** that flies through every topic, five demo galaxies that load instantly (Wikipedia's **Philosophy** at 6,364 words, plus **Nepal**, **Biology**, **World History** and **Machine Learning**), and a layout that works on phones.
 
 ## How it works
 
@@ -55,10 +56,10 @@ flowchart LR
   F & G --> H[✦ three.js galaxy<br/>bloom · nebulae · MST figures]
 ```
 
-1. **Chunk.** The text is split into sentences, and fragments are merged so each star holds one complete idea.
+1. **Read.** Citations, URLs and LaTeX are cleaned out, section headings are kept, and the text is split into complete thoughts. Long documents group sentences into passages (up to 600 stars) so nothing is dropped.
 2. **Embed.** [`all-MiniLM-L6-v2`](https://huggingface.co/Xenova/all-MiniLM-L6-v2) (quantized to 8-bit) turns each idea into a 384-dimensional vector that captures its *meaning*. It runs in the browser via [Transformers.js](https://github.com/huggingface/transformers.js), inside a Web Worker so the UI never freezes.
 3. **Project.** [UMAP](https://github.com/PAIR-code/umap-js) squeezes 384 dimensions into 3 while keeping similar ideas close. That's why related sentences end up as neighbors in space.
-4. **Cluster.** k-means groups nearby stars into constellations, and the number of groups scales with the size of the text.
+4. **Cluster.** k-means (with k-means++ seeding) is run for 3 to 16 topics. The **silhouette score** picks the richest split that stays clean, so the number of topics comes from the content itself, not a fixed formula.
 5. **Name.** Each constellation is named by TF-IDF, treating every cluster as one document. The top words are the ones that make *this* group different from the rest of the sky.
 6. **Draw.** Each constellation's figure is its **minimum spanning tree**, the same trick that makes it read like a real star chart. The stars use a custom GLSL shader (twinkle, glow, a spiral "big bang" on load), with unreal bloom, additive nebula sprites and dust particles.
 
@@ -116,7 +117,9 @@ constellate/
 - [`Xenova/all-MiniLM-L6-v2`](https://huggingface.co/Xenova/all-MiniLM-L6-v2): ONNX port of [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) (Apache 2.0)
 - [umap-js](https://github.com/PAIR-code/umap-js) by Google PAIR: dimensionality reduction
 - [Vite](https://vitejs.dev/) + TypeScript: build tooling
-- Fonts: [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) and [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (Google Fonts, OFL)
+- [PDF.js](https://mozilla.github.io/pdf.js/) by Mozilla: in-browser PDF text extraction
+- Fonts: [Geist](https://fonts.google.com/specimen/Geist) and [Geist Mono](https://fonts.google.com/specimen/Geist+Mono) (Google Fonts, OFL)
+- The Philosophy demo text comes from Wikipedia's [Philosophy](https://en.wikipedia.org/wiki/Philosophy) article (CC BY-SA 4.0).
 - Demo texts were written for this project.
 - Built with help from [Claude Code](https://claude.com/claude-code) (AI tools are allowed under the Hack Atlantic rules).
 

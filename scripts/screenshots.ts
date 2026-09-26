@@ -30,7 +30,7 @@ const shot = (page: Page, name: string) => page.screenshot({ path: `${OUT}/${nam
 const js = <T>(page: Page, fn: string) => page.evaluate(fn) as Promise<T>;
 
 // 1–4. Hero shots of every demo galaxy
-for (const sky of ['nepal', 'biology', 'history', 'machine-learning']) {
+for (const sky of ['philosophy', 'nepal', 'biology', 'history', 'machine-learning']) {
   const page = await open(sky);
   await sleep(4200);
   await shot(page, `galaxy-${sky}`);
@@ -89,7 +89,10 @@ for (const sky of ['nepal', 'biology', 'history', 'machine-learning']) {
 {
   const page = await open('nepal');
   await sleep(1500);
-  await js(page, `document.getElementById('open-paste').click(); document.getElementById('paste-sample').click()`);
+  await js(page, `document.getElementById('open-paste').click()`);
+  await sleep(800);
+  await shot(page, 'import');
+  await js(page, `document.querySelector('[data-tab="paste"]').click(); document.getElementById('paste-sample').click()`);
   await sleep(800);
   await shot(page, 'paste');
   await js(page, `document.getElementById('paste-go').click()`);

@@ -20,7 +20,7 @@ https://constellate.vercel.app
 https://github.com/Prafyl/constellate
 
 ## Setup instructions
-No setup needed for the demo: open the link, then click any star, press **Quiz**, or hit **✦ Map your own text → Try a sample**.
+No setup needed for the demo: open the link, then click any star, press **Quiz**, or hit **✦ Map a document** and pick a Wikipedia article (for example *Quantum mechanics*) or drop in a PDF.
 
 To run locally (Node 20+):
 ```
@@ -48,24 +48,26 @@ Constellate turns any text into a galaxy of ideas.
 - **Star Quiz** flies you from star to star and blanks out each one's key term. The wrong answers come from the same constellation, so they're genuinely tricky. Every correct answer turns a star gold.
 - **Tour** flies through every constellation automatically.
 - **Poster** exports a 2400×1350 share-ready image of your galaxy.
-- **Map your own text:** paste notes, an essay or a Wikipedia article, and a neural network builds your galaxy **on your device**. There's no sign-up and no API key, and nothing is uploaded.
+- **Map a document:** import a Wikipedia article by link, drop in a PDF / .txt / .md file (lecture notes, papers, book chapters), or paste text. A neural network builds your galaxy **on your device**. There's no sign-up and no API key, and nothing is uploaded. It's built for long reads: *Quantum mechanics* (7,963 words) becomes 14 topics in about 30 seconds, and each idea keeps the section it came from.
+- **Study guide export:** downloads a Markdown outline with one chapter per topic, its key terms, and every idea as a checklist (ideas you've mastered in the quiz come pre-ticked).
 
-It ships with four galaxies that load instantly: **Nepal** (where I'm from), **Biology**, **World History** and **Machine Learning**.
+It ships with five galaxies that load instantly, led by Wikipedia's **Philosophy** article (6,364 words → 13 topics), plus **Nepal** (where I'm from), **Biology**, **World History** and **Machine Learning**.
 
 ### How I built it
 A fully client-side ML pipeline feeding a custom three.js renderer:
 
 1. **Embeddings.** `all-MiniLM-L6-v2`, quantized to 8-bit, runs in the browser via Hugging Face **Transformers.js** inside a Web Worker. It turns each sentence into a 384-dimensional meaning vector.
 2. **UMAP** projects 384-D into 3-D, so ideas that mean similar things end up close in space.
-3. **k-means** groups them into constellations, and **TF-IDF** (treating each cluster as a document) names each constellation after the words that make it distinctive.
+3. **k-means** is run for 3 to 16 topics, and the **silhouette score** keeps the richest clean split, so a short note gets 3 topics and a long article gets 13 to 15. **TF-IDF** (treating each cluster as a document) names each constellation after the words that make it distinctive.
 4. **Rendering.** Each constellation's figure is its **minimum spanning tree**, which is why it reads like a real star chart. The stars are a single draw call with a custom GLSL shader (twinkle, glow, a spiral "big bang" as the galaxy forms). Unreal bloom, additive nebula sprites and dust particles complete the look.
 5. The demo galaxies are built by the **same pipeline in Node** ahead of time, so the first load is instant.
 
-Stack: TypeScript, Vite, three.js, Transformers.js, umap-js. It's a static site on GitHub Pages.
+Stack: TypeScript, Vite, three.js, Transformers.js, umap-js. PDF.js reads PDFs in the browser. It's a static site on Vercel.
 
 ### Challenges I ran into
 - **Making it fast on first click.** Downloading a model before showing anything would lose people, so I pre-computed the demo skies with the exact same code path in Node. The model loads only when you paste your own text.
 - **Naming clusters without an LLM.** Raw word counts gave names like "Cells & Cell". Treating each cluster as a TF-IDF document, stemming and de-duplicating across the sky produced names like *Evolution & Populations* and *Kathmandu & Valley*.
+- **Scaling to real documents.** My first version silently kept only the first 260 sentences. Now long texts are grouped into passages so the whole document is covered, Wikipedia's LaTeX and citation marks are stripped, and the topic count is chosen by silhouette score instead of a formula.
 - **Making it look like a star chart, not a scatter plot.** Connecting every star to its neighbors was a tangle. The minimum spanning tree per cluster gave clean, recognizable figures.
 - **Rendering details.** Stars turned into squares up close (plain points have no shape), and the bloom washed out everything until I rebalanced it.
 
@@ -82,7 +84,7 @@ Stack: TypeScript, Vite, three.js, Transformers.js, umap-js. It's a static site 
 
 ### What's next
 - Semantic search across *all* your galaxies at once.
-- Upload PDFs and whole textbooks, with multiple galaxies linked into a universe.
+- Whole textbooks, with multiple galaxies linked into a universe.
 - Spaced repetition, so stars fade over time until you review them.
 - Nepali-language support with a multilingual embedding model.
 - Shareable galaxy links.
@@ -98,18 +100,20 @@ typescript, three.js, webgl, glsl, transformers.js, hugging-face, onnx, umap, ma
 - Model: Xenova/all-MiniLM-L6-v2, ONNX port of sentence-transformers/all-MiniLM-L6-v2 (Apache 2.0)
 - umap-js by Google PAIR (Apache 2.0)
 - Vite + TypeScript
-- Fonts: Instrument Serif and Space Grotesk (Google Fonts, SIL OFL)
+- PDF.js by Mozilla (Apache 2.0): PDF text extraction
+- Philosophy demo text: Wikipedia, "Philosophy" (CC BY-SA 4.0)
+- Fonts: Geist and Geist Mono (Google Fonts, SIL OFL)
 - Demo texts written for this project
 - AI assistance: Claude Code (Anthropic) was used to help write code and copy. AI tools are allowed under the Hack Atlantic rules.
 
 ## Screenshots to upload (in this order)
 1. `docs/screenshots/intro.png`: hero
-2. `docs/screenshots/galaxy-nepal.png`
+2. `docs/screenshots/galaxy-philosophy.png`: 6,364-word article → 13 topics
 3. `docs/screenshots/ask-the-sky.png`
 4. `docs/screenshots/star-focus.png`
-5. `docs/screenshots/quiz.png`
+5. `docs/screenshots/import.png`
 6. `docs/screenshots/constellation.png`
-7. `docs/screenshots/how-it-works.png`
-8. `docs/screenshots/forming.png`
-9. `docs/screenshots/poster-nepal.png`
+7. `docs/screenshots/quiz.png`
+8. `docs/screenshots/how-it-works.png`
+9. `docs/screenshots/forming.png`
 10. `docs/screenshots/mobile.png`
