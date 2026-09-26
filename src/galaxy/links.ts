@@ -36,7 +36,7 @@ export function createConstellationLines(galaxy: Galaxy) {
   g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
   return new THREE.LineSegments(g, new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
   }));
 }
 

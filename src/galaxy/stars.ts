@@ -44,9 +44,9 @@ const fragment = /* glsl */ `
   void main() {
     float d = length(gl_PointCoord - 0.5);
     if (d > 0.5) discard;
-    float core = smoothstep(0.12, 0.0, d);
-    float halo = pow(smoothstep(0.5, 0.0, d), 2.6);
-    vec3 col = vColor * halo * 1.4 + vec3(1.0) * core;
+    float core = smoothstep(0.1, 0.04, d);
+    float halo = pow(smoothstep(0.5, 0.0, d), 3.6);
+    vec3 col = vColor * halo * 1.6 + mix(vColor, vec3(1.0), 0.75) * core;
     gl_FragColor = vec4(col, (halo + core) * vAlpha);
   }
 `;

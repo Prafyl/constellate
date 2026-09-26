@@ -32,7 +32,7 @@ export function createNebula(galaxy: Galaxy) {
 
     // gas: a few big overlapping sprites
     for (let i = 0; i < 7; i++) {
-      const m = new THREE.SpriteMaterial({ map: haze(), color, transparent: true, opacity: 0.026, depthWrite: false, blending: THREE.AdditiveBlending });
+      const m = new THREE.SpriteMaterial({ map: haze(), color, transparent: true, opacity: 0.018, depthWrite: false, blending: THREE.AdditiveBlending });
       const s = new THREE.Sprite(m);
       const anchor = members[i % members.length]?.pos ?? con.center;
       s.position.set(...anchor).lerp(new THREE.Vector3(...con.center), 0.5);
@@ -41,7 +41,7 @@ export function createNebula(galaxy: Galaxy) {
     }
 
     // dust: faint particles that make each constellation feel dense and alive
-    const n = 320;
+    const n = Math.round(Math.min(160, 700 / galaxy.constellations.length));
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
       const a = members[Math.floor(Math.random() * members.length)]?.pos ?? con.center;
@@ -50,7 +50,7 @@ export function createNebula(galaxy: Galaxy) {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     const dust = new THREE.Points(g, new THREE.PointsMaterial({
-      color, map: haze(), size: 0.9, transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+      color, map: haze(), size: 0.7, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
     }));
     group.add(dust);
   }
@@ -59,7 +59,7 @@ export function createNebula(galaxy: Galaxy) {
 
 /** Distant background stars. */
 export function createStarfield() {
-  const n = 5000;
+  const n = 2500;
   const pos = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) {
     const r = 400 + Math.random() * 600;

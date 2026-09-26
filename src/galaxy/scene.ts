@@ -35,6 +35,7 @@ export class Universe {
   private clock = new THREE.Clock();
   private hovered: number | null = null;
   private meteors = new Meteors();
+  private radius = 60;
   private shift = 0;
   private shiftTarget = 0;
 
@@ -63,9 +64,10 @@ export class Universe {
     this.scene.add(createStarfield(), this.world, this.threads.lines, this.meteors.group);
     this.scene.fog = new THREE.FogExp2(0x03040b, 0.0022);
 
-    this.composer = new EffectComposer(this.renderer);
+    // Multisampled target: post-processing otherwise disables antialiasing and everything goes soft.
+    this.composer = new EffectComposer(this.renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
     this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.95, 0.55, 0.12));
+    this.composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.62, 0.32, 0.22));
     this.composer.addPass(new OutputPass());
 
     this.raycaster.params.Points = { threshold: 2.6 };
@@ -77,6 +79,9 @@ export class Universe {
 
   load(galaxy: Galaxy) {
     this.galaxy = galaxy;
+    this.radius = Math.max(...galaxy.stars.map((s) => Math.hypot(...s.pos)));
+    this.controls.maxDistance = 5.5 * this.radius;
+    (this.scene.fog as THREE.FogExp2).density = 0.0022 * (60 / this.radius);
     this.world.clear();
     this.stars = new Stars(galaxy);
     this.figures = createConstellationLines(galaxy);
@@ -98,7 +103,7 @@ export class Universe {
     }
 
     this.formStart = this.clock.getElapsedTime();
-    this.flyTo([0, 0, 0], this.homePosition(), 2.6);
+    this.flyTo([0, 6, 0], this.homePosition(), 2.6);
   }
 
   /** Fly the camera so `target` is centered, at `distance` units away. */
@@ -109,12 +114,12 @@ export class Universe {
   }
 
   overview() {
-    this.flyTo([0, 0, 0], this.homePosition(), 1.8);
+    this.flyTo([0, 6, 0], this.homePosition(), 1.8);
   }
 
   /** Pull back further on tall screens so the whole galaxy fits. */
   private homePosition() {
-    return new THREE.Vector3(0, 30, 112).multiplyScalar(Math.max(1, 0.75 / this.camera.aspect));
+    return new THREE.Vector3(0, 30, 112).multiplyScalar((this.radius / 60) * Math.max(1, 0.75 / this.camera.aspect));
   }
 
   setStates(fn: (i: number) => StarState) {
@@ -151,7 +156,7 @@ export class Universe {
     const form = Math.min(1.5, (time - this.formStart) / 2.4);
     this.stars?.update(time, form);
     // constellation figures are drawn in once the stars have arrived
-    if (this.figures) (this.figures.material as THREE.LineBasicMaterial).opacity = 0.32 * Math.min(1, Math.max(0, (form - 0.7) / 0.5));
+    if (this.figures) (this.figures.material as THREE.LineBasicMaterial).opacity = 0.55 * Math.min(1, Math.max(0, (form - 0.7) / 0.5));
 
     if (this.flight) {
       const f = this.flight;
