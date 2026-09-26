@@ -1,8 +1,9 @@
 import type { Galaxy } from '../types';
+import { coreIdeas } from '../study/study';
 
 /**
  * Exports the galaxy as a study guide: one chapter per constellation (largest first),
- * its keywords, and its ideas in the order they appear in the original document.
+ * its key idea, keywords, and a checklist of its ideas in the order they appear in the original document.
  */
 export function studyGuideMarkdown(g: Galaxy, mastered: Set<number>) {
   const minutes = Math.max(1, Math.round(g.words / 230));
@@ -18,7 +19,8 @@ export function studyGuideMarkdown(g: Galaxy, mastered: Set<number>) {
     '',
   ];
   for (const c of [...g.constellations].sort((a, b) => b.size - a.size)) {
-    out.push(`## ${c.name}`, '', `Key terms: ${c.keywords.map((k) => `\`${k}\``).join(' ')}`, '');
+    const done = g.stars.filter((s) => s.cluster === c.id && mastered.has(s.id)).length;
+    out.push(`## ${c.name}`, '', `> **Key idea:** ${g.stars[coreIdeas(g, c.id)[0]].text}`, '', `Key terms: ${c.keywords.map((k) => `\`${k}\``).join(' ')} · Mastered: ${done}/${c.size}`, '');
     for (const s of g.stars.filter((s) => s.cluster === c.id)) {
       out.push(`- [${mastered.has(s.id) ? 'x' : ' '}] ${s.text}${s.section ? ` _(§ ${s.section})_` : ''}`);
     }

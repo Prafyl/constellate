@@ -13,8 +13,8 @@ const shuffle = <T>(a: T[]) => a.map((v) => [Math.random(), v] as const).sort((x
  * Builds a fill-in-the-blank question from a star. Distractors come from the
  * same constellation first, so the wrong answers are plausible, not silly.
  */
-export function makeQuestion(galaxy: Galaxy, mastered: Set<number>): Question | null {
-  const pool = galaxy.stars.filter((s) => s.term && !mastered.has(s.id) && new RegExp(`\\b${s.term}`, 'i').test(s.text));
+export function makeQuestion(galaxy: Galaxy, mastered: Set<number>, cluster: number | null = null): Question | null {
+  const pool = galaxy.stars.filter((s) => s.term && !mastered.has(s.id) && (cluster == null || s.cluster === cluster) && new RegExp(`\\b${s.term}`, 'i').test(s.text));
   if (!pool.length) return null;
   const star = pool[Math.floor(Math.random() * pool.length)];
 
