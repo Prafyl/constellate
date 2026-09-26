@@ -13,6 +13,7 @@
   "description": "Turn any text into a 3D galaxy of ideas you can explore — AI that runs entirely in your browser.",
   "dependencies": {
     "@huggingface/transformers": "^4.3.0",
+    "pdfjs-dist": "^6.3.289",
     "three": "^0.186.1",
     "umap-js": "^1.4.0"
   },
