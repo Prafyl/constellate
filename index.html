@@ -13,7 +13,7 @@
     <link rel="icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="universe"></div>
@@ -27,7 +27,7 @@
       <nav class="skies" id="skies" aria-label="Galaxies"></nav>
       <div class="top-actions">
         <button class="btn icon" id="open-info" title="How it works" aria-label="How it works">?</button>
-        <button class="btn primary" id="open-paste">✦ Map your own text</button>
+        <button class="btn primary" id="open-paste">✦ Map a document</button>
       </div>
     </header>
 
@@ -41,6 +41,8 @@
       <p class="eyebrow">You are exploring</p>
       <h1 id="galaxy-title">…</h1>
       <p class="stats" id="galaxy-stats"></p>
+      <p class="source" id="galaxy-source"></p>
+      <p class="eyebrow dim legend-title">Topics found</p>
       <ul class="legend" id="legend"></ul>
     </section>
 
@@ -68,6 +70,7 @@
     <div class="dock">
       <button class="btn" id="btn-quiz" title="Quiz yourself, star by star">◎ Quiz</button>
       <button class="btn" id="btn-tour" title="Fly through every constellation">➤ Tour</button>
+      <button class="btn" id="btn-guide" title="Download an organised study guide (Markdown)">☰ Study guide</button>
       <button class="btn" id="btn-poster" title="Download a poster of this galaxy">⤓ Poster</button>
     </div>
 
@@ -76,17 +79,17 @@
 
     <!-- First-visit intro -->
     <section class="intro" id="intro">
-      <p class="eyebrow">An AI that runs entirely in your browser</p>
+      <p class="eyebrow">Make sense of long documents</p>
       <h2>Every idea<br /><em>is a star.</em></h2>
-      <p class="sub">Paste any text. Constellate reads it with a neural network on your device, maps every idea by meaning, and draws the connections as constellations you can fly through, search and master.</p>
+      <p class="sub">Drop in a textbook chapter, a research paper, lecture notes or a Wikipedia article. A neural network on your device reads every idea, groups them into topics by meaning, and turns hours of reading into a map you can explore, search and study from.</p>
       <div class="intro-actions">
         <button class="btn primary big" id="intro-go">Explore the sky ✦</button>
         <button class="btn big" id="intro-how">How it works</button>
       </div>
       <ul class="intro-facts">
-        <li><b>0</b> servers</li>
-        <li><b>384</b> dimensions of meaning</li>
-        <li><b>23 MB</b> model, cached after first use</li>
+        <li><b>6,364</b> words in the demo</li>
+        <li><b>13</b> topics, found by AI</li>
+        <li><b>0</b> servers used</li>
       </ul>
     </section>
 
@@ -102,27 +105,68 @@
       </div>
     </div>
 
-    <!-- Paste your own -->
+    <!-- Bring your own document -->
     <div class="modal hidden" id="paste">
       <div class="modal-box glass">
         <button class="close" id="paste-close" aria-label="Close">×</button>
         <p class="eyebrow">New galaxy</p>
-        <h2>Paste anything. Watch it become a universe.</h2>
-        <p class="sub">Notes, an essay, a textbook chapter, a Wikipedia article. An AI model reads every idea <b>right here in your browser</b>. Nothing is uploaded.</p>
-        <input id="paste-title" placeholder="Name your galaxy (e.g. Organic Chemistry)" maxlength="40" />
-        <textarea id="paste-text" placeholder="Paste at least a few paragraphs…"></textarea>
-        <div class="modal-foot">
-          <span class="foot-left"><button type="button" class="linkish" id="paste-sample">✦ Try a sample: The Solar System</button><span class="eyebrow dim" id="paste-count">0 ideas</span></span>
-          <button class="btn primary" id="paste-go" disabled>Ignite ✦</button>
+        <h2>Map a document</h2>
+        <p class="sub">Built for long reads: textbook chapters, papers, lecture notes. Everything is processed <b>in your browser</b>, and nothing is uploaded.</p>
+
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="wiki">Wikipedia</button>
+          <button class="tab" data-tab="file">PDF / text file</button>
+          <button class="tab" data-tab="paste">Paste text</button>
         </div>
+
+        <div data-pane="wiki" class="pane">
+          <form class="row" id="wiki-form">
+            <input id="wiki-input" placeholder="Paste a Wikipedia link or type an article title" />
+            <button class="btn primary">Map it ✦</button>
+          </form>
+          <p class="eyebrow dim">Try a long one</p>
+          <div class="suggest">
+            <button class="chip-btn" data-wiki="Quantum mechanics">Quantum mechanics</button>
+            <button class="chip-btn" data-wiki="Climate change">Climate change</button>
+            <button class="chip-btn" data-wiki="Photosynthesis">Photosynthesis</button>
+            <button class="chip-btn" data-wiki="French Revolution">French Revolution</button>
+            <button class="chip-btn" data-wiki="Artificial intelligence">Artificial intelligence</button>
+            <button class="chip-btn" data-wiki="Economics">Economics</button>
+          </div>
+        </div>
+
+        <div data-pane="file" class="pane hidden">
+          <label class="drop" id="drop">
+            <input type="file" id="file-input" accept=".pdf,.txt,.md,text/plain,application/pdf" hidden />
+            <span class="drop-icon">⇪</span>
+            <b>Drop a PDF, .txt or .md file</b>
+            <span class="sub">or click to choose · lecture notes, papers, book chapters</span>
+          </label>
+        </div>
+
+        <div data-pane="paste" class="pane hidden">
+          <input id="paste-title" placeholder="Name your galaxy (e.g. Organic Chemistry, week 3)" maxlength="40" />
+          <textarea id="paste-text" placeholder="Paste notes, an essay or an article…"></textarea>
+          <div class="modal-foot">
+            <span class="foot-left"><button type="button" class="linkish" id="paste-sample">✦ Try a sample: The Solar System</button><span class="eyebrow dim" id="paste-count">0 ideas</span></span>
+            <button class="btn primary" id="paste-go" disabled>Ignite ✦</button>
+          </div>
+        </div>
+
+        <p class="import-error" id="import-error"></p>
       </div>
     </div>
 
     <div class="forming hidden" id="forming">
       <div class="orb"></div>
+      <h3 id="forming-title"></h3>
       <p class="eyebrow" id="forming-stage">Waking the model</p>
       <div class="bar"><i id="forming-bar"></i></div>
       <p class="sub">Running a neural network on your device. No servers, no sign-up.</p>
+      <div class="forming-error hidden" id="forming-error">
+        <p><b>Something went wrong.</b> <span id="forming-error-msg"></span></p>
+        <button class="btn" id="forming-close">Close</button>
+      </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

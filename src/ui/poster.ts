@@ -20,14 +20,16 @@ export function renderPoster(source: HTMLCanvasElement, galaxy: Galaxy) {
   ctx.fillRect(0, 0, W, H);
 
   ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  ctx.font = '500 26px "Space Grotesk"';
+  ctx.font = '500 24px "Geist Mono"';
   ctx.fillText('✦  C O N S T E L L A T E', 90, 110);
 
   ctx.fillStyle = '#fff';
-  ctx.font = 'italic 150px "Instrument Serif"';
+  ctx.font = '600 132px "Geist"';
+  ctx.letterSpacing = '-6px';
   ctx.fillText(galaxy.title, 86, H - 190);
 
-  ctx.font = '500 30px "Space Grotesk"';
+  ctx.letterSpacing = '0px';
+  ctx.font = '500 28px "Geist"';
   let x = 92;
   for (const con of galaxy.constellations) {
     ctx.fillStyle = con.color;
@@ -38,7 +40,7 @@ export function renderPoster(source: HTMLCanvasElement, galaxy: Galaxy) {
   }
 
   ctx.fillStyle = 'rgba(255,255,255,0.45)';
-  ctx.font = '400 24px "Space Grotesk"';
+  ctx.font = '400 22px "Geist Mono"';
   ctx.textAlign = 'right';
   ctx.fillText(`${galaxy.stars.length} ideas · mapped on-device by a neural network`, W - 90, 110);
 

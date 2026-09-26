@@ -6,6 +6,7 @@ let nextId = 0;
 const pending = new Map<number, (vec: number[]) => void>();
 let onProgress: (stage: string, pct: number) => void = () => {};
 let onGalaxy: (g: Galaxy) => void = () => {};
+let onError: (message: string) => void = () => {};
 
 function get() {
   if (worker) return worker;
@@ -14,24 +15,28 @@ function get() {
     const m = e.data;
     if (m.type === 'progress') onProgress(m.stage, m.pct);
     else if (m.type === 'done') onGalaxy(m.galaxy);
+    else if (m.type === 'error') onError(m.message);
     else if (m.type === 'query') { pending.get(m.id)?.(m.vec); pending.delete(m.id); }
   };
+  worker.onerror = (e) => onError(e.message || 'The AI worker crashed.');
   return worker;
 }
 
-export function buildInWorker(title: string, text: string, progress: typeof onProgress) {
+export function buildInWorker(title: string, text: string, source: string | undefined, progress: typeof onProgress) {
   onProgress = progress;
-  return new Promise<Galaxy>((resolve) => {
+  return new Promise<Galaxy>((resolve, reject) => {
     onGalaxy = resolve;
-    get().postMessage({ type: 'build', title, text });
+    onError = (m) => reject(new Error(m));
+    get().postMessage({ type: 'build', title, text, source });
   });
 }
 
 export function embedQuery(text: string, progress: typeof onProgress = () => {}) {
   onProgress = progress;
-  return new Promise<number[]>((resolve) => {
+  return new Promise<number[]>((resolve, reject) => {
     const id = nextId++;
     pending.set(id, resolve);
+    onError = (m) => reject(new Error(m));
     get().postMessage({ type: 'query', id, text });
   });
 }

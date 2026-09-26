@@ -30,6 +30,7 @@ export function showPanel(c: PanelContent) {
   if (c.quote) {
     const q = document.createElement('blockquote');
     q.textContent = c.quote;
+    if (c.quote.length > 180) q.classList.add('long');
     head.appendChild(q);
   }
   if (c.heading) {

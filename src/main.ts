@@ -7,9 +7,12 @@ import { showPanel, hidePanel } from './ui/panel';
 import { renderPipeline } from './ui/how-it-works';
 import { chunkText } from './ml/pipeline';
 import { buildInWorker, embedQuery, cosine } from './ml/client';
+import { fromWikipedia, fromFile, type Document } from './io/sources';
+import { downloadStudyGuide } from './ui/study-guide';
 import type { Galaxy } from './types';
 
 const DEMOS = [
+  { slug: 'philosophy', title: 'Philosophy', ask: 'How do we know what is true?' },
   { slug: 'nepal', title: 'Nepal', ask: 'Who first climbed Everest?' },
   { slug: 'biology', title: 'Biology', ask: 'How do cells get energy?' },
   { slug: 'history', title: 'World History', ask: 'What ended the Cold War?' },
@@ -59,7 +62,11 @@ function show(g: Galaxy) {
   renderPipeline(g);
 
   $('galaxy-title').textContent = g.title;
-  $('galaxy-stats').textContent = `${g.stars.length} ideas · ${g.constellations.length} constellations`;
+  const minutes = Math.max(1, Math.round(g.words / 230));
+  $('galaxy-stats').innerHTML = `<span><b>${g.words.toLocaleString()}</b> words</span><span><b>${g.stars.length}</b> ideas</span><span><b>${g.constellations.length}</b> topics</span>`;
+  $('galaxy-source').innerHTML = g.source
+    ? `≈${minutes} min read · <a href="${/^https?:/.test(g.source) ? g.source : '#'}" target="_blank" rel="noopener">${g.source.replace(/^https?:\/\/(www\.)?/, '').slice(0, 42)}</a>`
+    : `≈${minutes} min read`;
   $('legend').innerHTML = '';
   for (const c of [...g.constellations].sort((a, b) => b.size - a.size)) {
     const li = document.createElement('li');
@@ -105,7 +112,8 @@ function selectStar(id: number) {
     eyebrow: `✦ ${con.name}`,
     color: con.color,
     quote: s.text,
-    listLabel: 'Closest ideas, by meaning',
+    meta: s.section ? `§ ${s.section}` : undefined,
+    listLabel: 'Closest ideas anywhere in the text',
     items: s.neighbors.map((n, i) => ({ text: galaxy.stars[n].text, color: colorOf(n), score: s.scores[i], onClick: () => selectStar(n) })),
   });
 }
@@ -257,14 +265,73 @@ function stopTour(backToOverview = false) {
 
 $('btn-tour').onclick = () => (tourTimer ? stopTour(true) : startTour());
 $('btn-poster').onclick = () => downloadPoster(universe.snapshot(), galaxy);
+$('btn-guide').onclick = () => downloadStudyGuide(galaxy, mastered);
 
-// ─── Paste your own text ─────────────────────────────────────────────
+// ─── Bring your own document ────────────────────────────────────────
 const pasteText = $<HTMLTextAreaElement>('paste-text');
 const openModal = (id: string) => $(id).classList.remove('hidden');
 const closeModal = (id: string) => $(id).classList.add('hidden');
 
-$('open-paste').onclick = () => { openModal('paste'); pasteText.focus(); };
+function setTab(tab: string) {
+  document.querySelectorAll<HTMLElement>('[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => p.classList.toggle('hidden', p.dataset.pane !== tab));
+  $('import-error').textContent = '';
+}
+document.querySelectorAll<HTMLElement>('[data-tab]').forEach((b) => (b.onclick = () => setTab(b.dataset.tab!)));
+
+$('open-paste').onclick = () => { openModal('paste'); setTab('wiki'); $('wiki-input').focus(); };
 $('paste-close').onclick = () => closeModal('paste');
+
+async function ingest(load: () => Promise<Document>) {
+  $('import-error').textContent = '';
+  let doc: Document;
+  try {
+    doc = await load();
+  } catch (err) {
+    $('import-error').textContent = (err as Error).message;
+    return;
+  }
+  const n = chunkText(doc.text).length;
+  if (n < 8) { $('import-error').textContent = `That's only ${n} ideas. Constellate needs at least a few paragraphs.`; return; }
+
+  closeModal('paste');
+  openModal('forming');
+  $('forming-title').textContent = doc.title;
+  $('forming-error').classList.add('hidden');
+  let best = 0;
+  try {
+    custom = await buildInWorker(doc.title, doc.text, doc.source, (stage, pct) => {
+      best = Math.max(best, pct);
+      $('forming-stage').textContent = stage;
+      $('forming-bar').style.width = `${Math.round(best * 100)}%`;
+    });
+    closeModal('forming');
+    show(custom);
+  } catch (err) {
+    $('forming-error').classList.remove('hidden');
+    $('forming-error-msg').textContent = (err as Error).message;
+  }
+}
+
+$<HTMLFormElement>('wiki-form').onsubmit = (e) => {
+  e.preventDefault();
+  const q = $<HTMLInputElement>('wiki-input').value.trim();
+  if (q) ingest(() => fromWikipedia(q));
+};
+document.querySelectorAll<HTMLElement>('[data-wiki]').forEach((b) => (b.onclick = () => ingest(() => fromWikipedia(b.dataset.wiki!))));
+
+const fileInput = $<HTMLInputElement>('file-input');
+fileInput.onchange = () => fileInput.files?.[0] && ingest(() => fromFile(fileInput.files![0]));
+const drop = $('drop');
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = (e) => {
+  e.preventDefault();
+  drop.classList.remove('over');
+  const f = e.dataTransfer?.files[0];
+  if (f) ingest(() => fromFile(f));
+};
+
 pasteText.oninput = () => {
   const n = chunkText(pasteText.value).length;
   $('paste-count').textContent = `${n} ideas`;
@@ -275,17 +342,8 @@ $('paste-sample').onclick = async () => {
   $<HTMLInputElement>('paste-title').value = 'The Solar System';
   pasteText.dispatchEvent(new Event('input'));
 };
-$('paste-go').onclick = async () => {
-  const title = $<HTMLInputElement>('paste-title').value.trim() || 'My Galaxy';
-  closeModal('paste');
-  openModal('forming');
-  custom = await buildInWorker(title, pasteText.value, (stage, pct) => {
-    $('forming-stage').textContent = stage;
-    $('forming-bar').style.width = `${Math.round(pct * 100)}%`;
-  });
-  closeModal('forming');
-  show(custom);
-};
+$('paste-go').onclick = () => ingest(async () => ({ title: $<HTMLInputElement>('paste-title').value.trim() || 'My notes', text: pasteText.value }));
+$('forming-close').onclick = () => closeModal('forming');
 
 // ─── Intro & info ────────────────────────────────────────────────────
 function dismissIntro() {
@@ -294,6 +352,10 @@ function dismissIntro() {
   try { localStorage.setItem('constellate:intro', '1'); } catch { /* private mode */ }
 }
 $('intro-go').onclick = dismissIntro;
+// Any interaction outside the intro (switching skies, importing, searching…) dismisses it.
+document.addEventListener('pointerdown', (e) => {
+  if (document.body.classList.contains('intro-open') && !(e.target as Element).closest('.intro')) dismissIntro();
+}, true);
 $('intro-how').onclick = () => { dismissIntro(); openModal('info'); };
 $('open-info').onclick = () => openModal('info');
 $('info-close').onclick = () => closeModal('info');
@@ -324,4 +386,4 @@ if (import.meta.env.DEV) {
   });
 }
 
-loadDemo(params.get('sky') ?? 'nepal');
+loadDemo(params.get('sky') ?? 'philosophy');
